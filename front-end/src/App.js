@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container, Row, Col, Navbar, Card} from 'react-bootstrap';
+import {Container, Row, Col, Navbar, Card, Accordion, ListGroup } from 'react-bootstrap';
 import './App.css';
 
 const todos = [
@@ -33,7 +33,24 @@ function App() {
             <Card body>
               <div></div>
               <hr />
-              {todos.map((todo, index) => ())}
+              <Accordion defaultActiveKey="0">
+                {todos.map((todo, index) => (
+                  <Card key={index}>
+                    <Accordion.Toggle as={Card.Header} variant="link" eventKey={index}>
+                      {todo.name}
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={index}>
+                      <Card.Body>
+                        <ListGroup variant="flush">
+                          {todo.items.map((item, index) => (
+                            <ListGroup.Item key={index}>{item.title}</ListGroup.Item>
+                          ))}
+                        </ListGroup>
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                ))}
+              </Accordion>
             </Card>
           </Col>
         </Row>
