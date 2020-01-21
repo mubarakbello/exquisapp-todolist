@@ -4,7 +4,11 @@ const TodoList = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Property name is required.']
-  }
+  },
+  items: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'TodoItems',
+  }]
 });
 
 const TodoItem = new mongoose.Schema({

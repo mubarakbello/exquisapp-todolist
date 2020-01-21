@@ -2,6 +2,12 @@ import React from 'react';
 import {Container, Row, Col, Navbar, Card} from 'react-bootstrap';
 import './App.css';
 
+const todos = [
+  {
+    title:  ""
+  }
+]
+
 function App() {
   return (
     <div>
