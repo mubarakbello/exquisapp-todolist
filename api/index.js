@@ -1,7 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/codetest', { useNewUrlParser: true }, err => {
+require('dotenv').config();
+
+const DB_CONN_STRING = process.env.DB_CONN_STRING;
+
+mongoose.connect(DB_CONN_STRING, { useNewUrlParser: true }, err => {
   if (err) {
     console.log('Error connecting to DB due to:', err);
     console.log('Process exiting with code 1');
