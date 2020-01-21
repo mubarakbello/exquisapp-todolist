@@ -4,7 +4,10 @@ module.exports = {
 
   getAllTodoLists: (req, res) => {
     // return all todolists in the db
-    TodoLists.find({}, (err, data) => {
+    TodoLists
+      .find({})
+      .populate('items')
+      .exec((err, data) => {
       if (err) {
         return res.json({
           error: true,
@@ -47,6 +50,7 @@ module.exports = {
     });
   },
 
+
   addNewItem: (req, res) => {
     const listId = req.params.list_id;
     const { title } = req.body;
@@ -80,9 +84,19 @@ module.exports = {
           message: `New todo list item with Id ${data._id} added`,
           data: data
         });
+
+        TodoLists.findById(data._id, (err, doc) => {
+          if (err) {
+            // pass
+          } else {
+            doc.items.push(data._id);
+            doc.save();
+          }
+        })
       });
     });
   },
+
 
   updateTodoItem: (req, res) => {
     const itemId = req.params.item_id;
@@ -111,6 +125,7 @@ module.exports = {
     })
   },
 
+
   deleteTodoListById: (req, res) => {
     const listId = req.params.list_id;
 
@@ -136,6 +151,7 @@ module.exports = {
       });
     })
   },
+
 
   deleteTodoItemById: (req, res) => {
     const itemId = req.params.item_id;
