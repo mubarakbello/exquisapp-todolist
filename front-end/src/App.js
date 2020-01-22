@@ -11,14 +11,22 @@ const API_URL = "http://localhost:3108/api";
 
 class App extends React.Component {
 
-  state = {
-    loading: true,
-    newListName: "",
-    items: {}
-  };
+  constructor() {
+    super();
+    this.state = {
+      loading: true,
+      newListName: "",
+      items: {}
+    };
+    this.index = Number(localStorage.getItem("index")) || 0;
+  }
 
   componentDidMount() {
     this.loadTodoListData();
+  }
+
+  componentDidUpdate() {
+    this.index = Number(localStorage.getItem("index")) || 0;
   }
 
   loadTodoListData = () => {
@@ -65,10 +73,11 @@ class App extends React.Component {
             ...this.state.items,
             [listId]: ""
           }
+        }, () => {
+          setTimeout(() => {
+            this.loadTodoListData();
+          }, 1000);
         });
-        setTimeout(() => {
-          this.loadTodoListData();
-        }, 1000);
       })
   }
 
@@ -96,6 +105,10 @@ class App extends React.Component {
       })
   }
 
+  trackKey = (index) => {
+    localStorage.setItem("index", index);
+  }
+
   render() {
     return (
       <div>
@@ -107,7 +120,7 @@ class App extends React.Component {
             <Col md={6}>
               <Card body>
                 <div>
-                <Form>
+                <Form onSubmit={this.addNewList}>
                   <Form.Group controlId="formBasicEmail">
                     <Form.Control
                       type="text"
@@ -116,17 +129,17 @@ class App extends React.Component {
                       onChange={(event) => this.setState({newListName: event.target.value})}
                     />
                   </Form.Group>
-                  <Button variant="primary" onClick={this.addNewList}>
+                  <Button variant="primary" type="submit">
                     +  Add New List
                   </Button>
                 </Form>
                 </div>
                 <hr />
                 {!this.state.loading &&
-                  <Accordion defaultActiveKey="0">
+                  <Accordion defaultActiveKey={this.index}>
                     {this.state.todos.map((todo, index) => (
                       <Card key={index}>
-                        <Accordion.Toggle as={Card.Header} variant="link" eventKey={index}>
+                        <Accordion.Toggle as={Card.Header} variant="link" eventKey={index} onClick={() => this.trackKey(index)}>
                           {todo.name}
                           <div style={{position: "absolute", top: "12px", right: "24px"}} className="pull-right">
                             <CloseButton onClick={(event) => this.deleteList(event, todo._id)} />
@@ -135,7 +148,7 @@ class App extends React.Component {
                         <Accordion.Collapse eventKey={index}>
                           <Card.Body>
                             <ListGroup variant="flush">
-                              <Form>
+                              <Form onSubmit={() => this.addNewItem(todo._id)}>
                                 <Form.Row>
                                   <Col>
                                     <Form.Control
@@ -152,7 +165,7 @@ class App extends React.Component {
                                     />
                                   </Col>
                                   <Col xs="auto">
-                                    <Button variant="primary" onClick={() => this.addNewItem(todo._id)}>
+                                    <Button variant="primary" type="submit">
                                       Add Item
                                     </Button>
                                   </Col>
