@@ -52,8 +52,7 @@ module.exports = {
 
 
   addNewItem: (req, res) => {
-    const listId = req.params.list_id;
-    const { title } = req.body;
+    const { title, listId } = req.body;
 
     if (!listId || !title) {
       return res.json({
@@ -63,7 +62,7 @@ module.exports = {
     }
 
     TodoLists.findById(listId, (err, data) => {
-      if (!data.length) {
+      if (!data) {
         return res.json({
           error: true,
           message: 'TodoList with listId passed non-existent'
@@ -85,10 +84,11 @@ module.exports = {
           data: data
         });
 
-        TodoLists.findById(data._id, (err, doc) => {
+        TodoLists.findById(data.listId, (err, doc) => {
           if (err) {
             // pass
           } else {
+            console.log("Doc:", doc);
             doc.items.push(data._id);
             doc.save();
           }

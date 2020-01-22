@@ -10,9 +10,9 @@ Router.get('/todos', controller.getAllTodoLists);
 Router.post('/todo-list', JSONParser, controller.addNewList);
 Router.post('/todo-item', JSONParser, controller.addNewItem);
 
-Router.put('/todo-item', JSONParser, controller.updateTodoItem);
+Router.put('/todo-item/:item_id', JSONParser, controller.updateTodoItem);
 
-Router.delete('/todo-list', controller.deleteTodoListById);
-Router.delete('/todo-item', controller.deleteTodoItemById);
+Router.delete('/todo-list/:list_id', controller.deleteTodoListById);
+Router.delete('/todo-item/:item_id', controller.deleteTodoItemById);
 
 module.exports = Router;
